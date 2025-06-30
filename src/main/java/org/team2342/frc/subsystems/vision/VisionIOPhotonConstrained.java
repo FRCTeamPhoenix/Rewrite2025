@@ -1,9 +1,8 @@
-// Copyright (c) 2021-2025 Littleton Robotics
-// http://github.com/Mechanical-Advantage
+// Copyright (c) 2025 Team 2342
+// https://github.com/FRCTeamPhoenix
 //
-// Use of this source code is governed by a BSD
-// license that can be found in the LICENSE file
-// at the root directory of this project.
+// This source code is licensed under the MIT License.
+// See the LICENSE file in the root directory of this project.
 
 package org.team2342.frc.subsystems.vision;
 
