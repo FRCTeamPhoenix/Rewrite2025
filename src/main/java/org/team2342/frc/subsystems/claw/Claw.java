@@ -66,7 +66,9 @@ public class Claw extends SubsystemBase {
 
   public Command intakeUntilCoral() {
     return Commands.sequence(
-        intake().until(() -> distanceSensorInputs.distanceMeters < ClawConstants.SENSOR_THRESHOLD),
-        stop()).withName("Claw Intake Until Coral");
+            intake()
+                .until(() -> distanceSensorInputs.distanceMeters < ClawConstants.SENSOR_THRESHOLD),
+            stop())
+        .withName("Claw Intake Until Coral");
   }
 }
