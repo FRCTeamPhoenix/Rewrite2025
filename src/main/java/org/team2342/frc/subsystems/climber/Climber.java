@@ -1,27 +1,47 @@
 package org.team2342.frc.subsystems.climber;
 
+import edu.wpi.first.wpilibj.Alert;
+import edu.wpi.first.wpilibj.Alert.AlertType;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
 import org.team2342.lib.logging.ExecutionLogger;
+import org.team2342.lib.motors.dumb.DumbMotorIO;
 import org.team2342.lib.motors.dumb.DumbMotorIOInputsAutoLogged;
-import org.team2342.lib.motors.dumb.DumbMotorIOTalonFX;
 
 public class Climber extends SubsystemBase {
-  private final DumbMotorIOTalonFX climberTalon;
+  private final DumbMotorIO motor;
   private final DumbMotorIOInputsAutoLogged inputs = new DumbMotorIOInputsAutoLogged();
 
+  private final Alert climberTalonAlert =
+      new Alert("Climber Motor is diconnected", AlertType.kError);
   private double volts = 0.0;
 
-  public Climber(DumbMotorIOTalonFX climberTalon) {
-    this.climberTalon = climberTalon;
+  public Climber(DumbMotorIO motor) {
+    this.motor = motor;
   }
 
   @Override
   public void periodic() {
-    climberTalon.updateInputs(inputs);
-    climberTalon.runVoltage(volts);
+    motor.updateInputs(inputs);
     Logger.processInputs("Climber", inputs);
+    motor.runVoltage(volts);
 
-    ExecutionLogger.log("Climber/Periodic");
+    climberTalonAlert.set(!inputs.connected);
+
+    ExecutionLogger.log("Climber");
+  }
+
+  public Command climberOut() {
+    return Commands.run(() -> motor.runVoltage(10), this);
+  }
+
+  public Command climberIn() {
+    return Commands.run(() -> motor.runVoltage(-10), this);
+  }
+
+  public Command stop() {
+    return Commands.run(() -> motor.runVoltage(0), this);
   }
 }
