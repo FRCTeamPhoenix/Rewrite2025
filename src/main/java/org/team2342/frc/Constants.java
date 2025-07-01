@@ -25,7 +25,7 @@ import org.team2342.lib.motors.dumb.DumbMotorConfig;
 import org.team2342.lib.motors.dumb.DumbMotorConfig.IdleMode;
 
 public final class Constants {
-  public static final Mode CURRENT_MODE = Mode.SIM;
+  public static final Mode CURRENT_MODE = Mode.REAL;
   public static final boolean TUNING = false;
 
   public static enum Mode {
@@ -169,7 +169,10 @@ public final class Constants {
     public static final double SENSOR_THRESHOLD = 0.02;
 
     public static final DumbMotorConfig CLAW_CONFIG =
-        new DumbMotorConfig().withIdleMode(IdleMode.BRAKE).withSupplyCurrentLimit(30);
+        new DumbMotorConfig()
+            .withIdleMode(IdleMode.BRAKE)
+            .withSupplyCurrentLimit(30)
+            .withMotorInverted(true);
 
     public static final DCMotor CLAW_SIM_MOTOR = DCMotor.getKrakenX60(1);
     public static final DCMotorSim CLAW_SIM =

@@ -182,6 +182,9 @@ public class RobotContainer {
                 drive::getPose,
                 () -> -driverController.getLeftY(),
                 () -> -driverController.getLeftX()));
+
+    driverController.y().whileTrue(claw.intakeUntilCoral()).onFalse(claw.stop());
+    driverController.x().whileTrue(claw.outtake()).onFalse(claw.stop());
   }
 
   public Command getAutonomousCommand() {

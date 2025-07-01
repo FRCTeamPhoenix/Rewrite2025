@@ -58,12 +58,12 @@ public class Claw extends SubsystemBase {
   }
 
   public Command stop() {
-    return Commands.run(() -> motor.runVoltage(0.0), this);
+    return Commands.runOnce(() -> motor.runVoltage(0.0), this);
   }
 
   public Command intakeUntilCoral() {
     return Commands.sequence(
         intake().until(() -> distanceSensorInputs.distanceMeters < ClawConstants.SENSOR_THRESHOLD),
-        stop().withTimeout(0.01));
+        stop());
   }
 }
