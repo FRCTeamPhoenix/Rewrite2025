@@ -34,6 +34,9 @@ public class Claw extends SubsystemBase {
   public Claw(DumbMotorIO motor, DistanceSensorIO distanceSensor) {
     this.motor = motor;
     this.distanceSensor = distanceSensor;
+
+    setName("Claw");
+    setDefaultCommand(Commands.run(() -> motor.runVoltage(0.0), this));
   }
 
   @Override
@@ -50,20 +53,20 @@ public class Claw extends SubsystemBase {
   }
 
   public Command intake() {
-    return Commands.run(() -> motor.runVoltage(3.0), this);
+    return Commands.run(() -> motor.runVoltage(3.0), this).withName("Claw Intake");
   }
 
   public Command outtake() {
-    return Commands.run(() -> motor.runVoltage(-3.0), this);
+    return Commands.run(() -> motor.runVoltage(-3.0), this).withName("Claw Outtake");
   }
 
   public Command stop() {
-    return Commands.runOnce(() -> motor.runVoltage(0.0), this);
+    return Commands.runOnce(() -> motor.runVoltage(0.0), this).withName("Claw Stop");
   }
 
   public Command intakeUntilCoral() {
     return Commands.sequence(
         intake().until(() -> distanceSensorInputs.distanceMeters < ClawConstants.SENSOR_THRESHOLD),
-        stop());
+        stop()).withName("Claw Intake Until Coral");
   }
 }
