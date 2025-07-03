@@ -9,7 +9,6 @@ package org.team2342.frc.subsystems.climber;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
 import org.team2342.lib.logging.ExecutionLogger;
@@ -26,7 +25,7 @@ public class Climber extends SubsystemBase {
     this.motor = motor;
     setName("Climber");
 
-    setDefaultCommand(Commands.run(() -> motor.runVoltage(0.0), this));
+    setDefaultCommand(run(() -> motor.runVoltage(0.0)));
   }
 
   @Override
@@ -40,14 +39,14 @@ public class Climber extends SubsystemBase {
   }
 
   public Command out() {
-    return Commands.run(() -> motor.runVoltage(10.0), this).withName("Climber Out");
+    return run(() -> motor.runVoltage(10.0)).withName("Climber Out");
   }
 
   public Command in() {
-    return Commands.run(() -> motor.runVoltage(-10.0), this).withName("Climber In");
+    return run(() -> motor.runVoltage(-10.0)).withName("Climber In");
   }
 
   public Command stop() {
-    return Commands.runOnce(() -> motor.runVoltage(0.0), this).withName("Climber Stop");
+    return runOnce(() -> motor.runVoltage(0.0)).withName("Climber Stop");
   }
 }
