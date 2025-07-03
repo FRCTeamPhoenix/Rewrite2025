@@ -9,7 +9,6 @@ package org.team2342.frc.subsystems.claw;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
 import org.team2342.frc.Constants.ClawConstants;
@@ -36,7 +35,7 @@ public class Claw extends SubsystemBase {
     this.distanceSensor = distanceSensor;
 
     setName("Claw");
-    setDefaultCommand(Commands.run(() -> motor.runVoltage(0.0), this));
+    setDefaultCommand(run(() -> motor.runVoltage(0.0)));
   }
 
   @Override
@@ -53,22 +52,21 @@ public class Claw extends SubsystemBase {
   }
 
   public Command intake() {
-    return Commands.run(() -> motor.runVoltage(3.0), this).withName("Claw Intake");
+    return run(() -> motor.runVoltage(3.0)).withName("Claw Intake");
   }
 
   public Command outtake() {
-    return Commands.run(() -> motor.runVoltage(-3.0), this).withName("Claw Outtake");
+    return run(() -> motor.runVoltage(-3.0)).withName("Claw Outtake");
   }
 
   public Command stop() {
-    return Commands.runOnce(() -> motor.runVoltage(0.0), this).withName("Claw Stop");
+    return runOnce(() -> motor.runVoltage(0.0)).withName("Claw Stop");
   }
 
   public Command intakeUntilCoral() {
-    return Commands.sequence(
-            intake()
-                .until(() -> distanceSensorInputs.distanceMeters < ClawConstants.SENSOR_THRESHOLD),
-            stop())
+    return intake()
+        .until(() -> distanceSensorInputs.distanceMeters < ClawConstants.SENSOR_THRESHOLD)
+        .andThen(stop())
         .withName("Claw Intake Until Coral");
   }
 }
