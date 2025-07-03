@@ -11,6 +11,7 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.MatBuilder;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -21,6 +22,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import org.team2342.lib.motors.dumb.DumbMotorConfig;
 import org.team2342.lib.motors.dumb.DumbMotorConfig.IdleMode;
 
@@ -180,6 +182,33 @@ public final class Constants {
             LinearSystemId.createDCMotorSystem(CLAW_SIM_MOTOR, 0.003, 5), CLAW_SIM_MOTOR);
   }
 
+  public static final class ClimberConstants {
+    public static final double GEAR_RATIO = 144;
+    public static final double ARM_LENGTH = Units.inchesToMeters(16.6);
+    public static final Rotation2d ANGLE_OFFSET = Rotation2d.fromDegrees(0);
+    public static final double MIN_ANGLE = -Math.PI;
+    public static final double MAX_ANGLE = Math.PI;
+
+    public static final DumbMotorConfig CLIMBER_CONFIG =
+        new DumbMotorConfig()
+            .withIdleMode(IdleMode.BRAKE)
+            .withSupplyCurrentLimit(40)
+            .withMotorInverted(false);
+
+    public static final DCMotor CLIMBER_SIM_MOTOR = DCMotor.getKrakenX60(1);
+
+    public static final SingleJointedArmSim CLIMBER_SIM =
+        new SingleJointedArmSim(
+            LinearSystemId.createSingleJointedArmSystem(CLIMBER_SIM_MOTOR, 0.04, GEAR_RATIO),
+            CLIMBER_SIM_MOTOR,
+            GEAR_RATIO,
+            ARM_LENGTH,
+            MIN_ANGLE,
+            MAX_ANGLE,
+            true,
+            MAX_ANGLE);
+  }
+
   public static final class CANConstants {
     public static final int PDH_ID = 14;
 
@@ -191,5 +220,6 @@ public final class Constants {
 
     public static final int CLAW_ID = 19;
     public static final int CLAW_LASERCAN_ID = 20;
+    public static final int CLIMBER_ID = 21;
   }
 }

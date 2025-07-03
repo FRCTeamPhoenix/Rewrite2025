@@ -28,12 +28,14 @@ import org.littletonrobotics.junction.inputs.LoggedPowerDistribution;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.team2342.frc.Constants.CANConstants;
 import org.team2342.frc.Constants.ClawConstants;
+import org.team2342.frc.Constants.ClimberConstants;
 import org.team2342.frc.Constants.DriveConstants;
 import org.team2342.frc.Constants.VisionConstants;
 import org.team2342.frc.commands.DriveCommands;
 import org.team2342.frc.commands.DriveToPose;
 import org.team2342.frc.commands.RotationLockedDrive;
 import org.team2342.frc.subsystems.claw.Claw;
+import org.team2342.frc.subsystems.climber.Climber;
 import org.team2342.frc.subsystems.drive.Drive;
 import org.team2342.frc.subsystems.drive.GyroIO;
 import org.team2342.frc.subsystems.drive.GyroIOPigeon2;
@@ -56,12 +58,17 @@ public class RobotContainer {
   @Getter private final Drive drive;
   @Getter private final Vision vision;
   @Getter private final Claw claw;
+  @Getter private final Climber climber;
 
   private final LoggedDashboardChooser<Command> autoChooser;
 
   @Getter private final CommandXboxController driverController = new CommandXboxController(0);
   private final Alert driverControllerAlert =
       new Alert("Driver controller is disconnected!", AlertType.kError);
+
+  @Getter private final CommandXboxController operatorController = new CommandXboxController(1);
+  private final Alert operatorControllerAlert =
+      new Alert("Operator controller is disconnected!", AlertType.kError);
 
   public RobotContainer() {
     switch (Constants.CURRENT_MODE) {
@@ -88,6 +95,9 @@ public class RobotContainer {
                     RangingMode.SHORT,
                     TimingBudget.TIMING_BUDGET_33MS,
                     new RegionOfInterest(0, 0, 6, 6)));
+        climber =
+            new Climber(
+                new DumbMotorIOTalonFX(CANConstants.CLIMBER_ID, ClimberConstants.CLIMBER_CONFIG));
 
         LoggedPowerDistribution.getInstance(CANConstants.PDH_ID, ModuleType.kRev);
         break;
@@ -114,10 +124,15 @@ public class RobotContainer {
                     VisionConstants.LEFT_CAMERA_NAME,
                     VisionConstants.FRONT_LEFT_TRANSFORM,
                     drive::getRawOdometryPose));
+
         claw =
             new Claw(
                 new DumbMotorIOSim(ClawConstants.CLAW_SIM_MOTOR, ClawConstants.CLAW_SIM),
                 new DistanceSensorIOSim("ClawSimSensor", 1));
+        climber =
+            new Climber(
+                new DumbMotorIOSim(
+                    ClimberConstants.CLIMBER_SIM_MOTOR, ClimberConstants.CLIMBER_SIM));
 
         break;
 
@@ -131,6 +146,7 @@ public class RobotContainer {
                 new ModuleIO() {});
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
         claw = new Claw(new DumbMotorIO() {}, new DistanceSensorIO() {});
+        climber = new Climber(new DumbMotorIO() {});
 
         break;
     }
@@ -182,6 +198,8 @@ public class RobotContainer {
                 drive::getPose,
                 () -> -driverController.getLeftY(),
                 () -> -driverController.getLeftX()));
+    operatorController.povLeft().whileTrue(climber.out()).onFalse(climber.stop());
+    operatorController.povRight().whileTrue(climber.in()).onFalse(climber.stop());
 
     driverController.y().whileTrue(claw.intakeUntilCoral()).onFalse(claw.stop());
     driverController.x().whileTrue(claw.outtake()).onFalse(claw.stop());
@@ -220,5 +238,6 @@ public class RobotContainer {
 
   public void updateAlerts() {
     driverControllerAlert.set(!driverController.isConnected());
+    operatorControllerAlert.set(!operatorController.isConnected());
   }
 }
