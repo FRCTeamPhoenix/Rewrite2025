@@ -22,7 +22,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
-
+import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import org.team2342.lib.motors.dumb.DumbMotorConfig;
 import org.team2342.lib.motors.dumb.DumbMotorConfig.IdleMode;
 
@@ -167,6 +167,21 @@ public final class Constants {
     public static final double ODOMETRY_FREQUENCY = IS_CANFD ? 250.0 : 100.0;
   }
 
+    public static final class ClawConstants {
+    public static final double SENSOR_THRESHOLD = 0.02;
+
+    public static final DumbMotorConfig CLAW_CONFIG =
+        new DumbMotorConfig()
+            .withIdleMode(IdleMode.BRAKE)
+            .withSupplyCurrentLimit(30)
+            .withMotorInverted(true);
+
+    public static final DCMotor CLAW_SIM_MOTOR = DCMotor.getKrakenX60(1);
+    public static final DCMotorSim CLAW_SIM =
+        new DCMotorSim(
+            LinearSystemId.createDCMotorSystem(CLAW_SIM_MOTOR, 0.003, 5), CLAW_SIM_MOTOR);
+  }
+  
   public static final class ClimberConstants {
     public static final double GEAR_RATIO = 144;
     public static final double ARM_LENGTH = Units.inchesToMeters(16.6);
@@ -192,9 +207,8 @@ public final class Constants {
         MAX_ANGLE,
         true,
         MAX_ANGLE);
-
   }
-
+ 
   public static final class CANConstants {
     public static final int PDH_ID = 14;
 
@@ -204,6 +218,8 @@ public final class Constants {
     public static final int[] BL_IDS = {3, 7, 11};
     public static final int[] BR_IDS = {4, 8, 12};
 
+    public static final int CLAW_ID = 19;
+    public static final int CLAW_LASERCAN_ID = 20;
     public static final int CLIMBER_ID = 21;
   }
 }
