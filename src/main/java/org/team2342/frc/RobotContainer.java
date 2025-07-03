@@ -68,7 +68,7 @@ public class RobotContainer {
 
   @Getter private final CommandXboxController operatorController = new CommandXboxController(1);
   private final Alert operatorControllerAlert =
-      new Alert("Driver controller is disconnected!", AlertType.kError);
+      new Alert("Operator controller is disconnected!", AlertType.kError);
 
   public RobotContainer() {
     switch (Constants.CURRENT_MODE) {
