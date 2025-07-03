@@ -21,8 +21,8 @@ import edu.wpi.first.math.numbers.N8;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import org.team2342.lib.motors.dumb.DumbMotorConfig;
 import org.team2342.lib.motors.dumb.DumbMotorConfig.IdleMode;
 
@@ -167,7 +167,7 @@ public final class Constants {
     public static final double ODOMETRY_FREQUENCY = IS_CANFD ? 250.0 : 100.0;
   }
 
-    public static final class ClawConstants {
+  public static final class ClawConstants {
     public static final double SENSOR_THRESHOLD = 0.02;
 
     public static final DumbMotorConfig CLAW_CONFIG =
@@ -181,7 +181,7 @@ public final class Constants {
         new DCMotorSim(
             LinearSystemId.createDCMotorSystem(CLAW_SIM_MOTOR, 0.003, 5), CLAW_SIM_MOTOR);
   }
-  
+
   public static final class ClimberConstants {
     public static final double GEAR_RATIO = 144;
     public static final double ARM_LENGTH = Units.inchesToMeters(16.6);
@@ -198,17 +198,17 @@ public final class Constants {
     public static final DCMotor CLIMBER_SIM_MOTOR = DCMotor.getKrakenX60(1);
 
     public static final SingleJointedArmSim CLIMBER_SIM =
-    new SingleJointedArmSim(
-        LinearSystemId.createSingleJointedArmSystem(CLIMBER_SIM_MOTOR, 0.04, GEAR_RATIO),
-        CLIMBER_SIM_MOTOR,
-        GEAR_RATIO,
-        ARM_LENGTH,
-        MIN_ANGLE,
-        MAX_ANGLE,
-        true,
-        MAX_ANGLE);
+        new SingleJointedArmSim(
+            LinearSystemId.createSingleJointedArmSystem(CLIMBER_SIM_MOTOR, 0.04, GEAR_RATIO),
+            CLIMBER_SIM_MOTOR,
+            GEAR_RATIO,
+            ARM_LENGTH,
+            MIN_ANGLE,
+            MAX_ANGLE,
+            true,
+            MAX_ANGLE);
   }
- 
+
   public static final class CANConstants {
     public static final int PDH_ID = 14;
 

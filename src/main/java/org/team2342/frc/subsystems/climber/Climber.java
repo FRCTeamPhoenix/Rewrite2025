@@ -1,3 +1,9 @@
+// Copyright (c) 2025 Team 2342
+// https://github.com/FRCTeamPhoenix
+//
+// This source code is licensed under the MIT License.
+// See the LICENSE file in the root directory of this project.
+
 package org.team2342.frc.subsystems.climber;
 
 import edu.wpi.first.wpilibj.Alert;
@@ -14,8 +20,7 @@ public class Climber extends SubsystemBase {
   private final DumbMotorIO motor;
   private final DumbMotorIOInputsAutoLogged inputs = new DumbMotorIOInputsAutoLogged();
 
-  private final Alert motorAlert =
-      new Alert("Climber Motor is diconnected", AlertType.kError);
+  private final Alert motorAlert = new Alert("Climber Motor is diconnected", AlertType.kError);
 
   public Climber(DumbMotorIO motor) {
     this.motor = motor;
@@ -28,7 +33,6 @@ public class Climber extends SubsystemBase {
   public void periodic() {
     motor.updateInputs(inputs);
     Logger.processInputs("Climber", inputs);
-    
 
     motorAlert.set(!inputs.connected);
 

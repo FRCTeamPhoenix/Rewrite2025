@@ -27,15 +27,15 @@ import lombok.Getter;
 import org.littletonrobotics.junction.inputs.LoggedPowerDistribution;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.team2342.frc.Constants.CANConstants;
-import org.team2342.frc.Constants.ClimberConstants;
 import org.team2342.frc.Constants.ClawConstants;
+import org.team2342.frc.Constants.ClimberConstants;
 import org.team2342.frc.Constants.DriveConstants;
 import org.team2342.frc.Constants.VisionConstants;
 import org.team2342.frc.commands.DriveCommands;
 import org.team2342.frc.commands.DriveToPose;
 import org.team2342.frc.commands.RotationLockedDrive;
-import org.team2342.frc.subsystems.climber.Climber;
 import org.team2342.frc.subsystems.claw.Claw;
+import org.team2342.frc.subsystems.climber.Climber;
 import org.team2342.frc.subsystems.drive.Drive;
 import org.team2342.frc.subsystems.drive.GyroIO;
 import org.team2342.frc.subsystems.drive.GyroIOPigeon2;
@@ -124,17 +124,15 @@ public class RobotContainer {
                     VisionConstants.LEFT_CAMERA_NAME,
                     VisionConstants.FRONT_LEFT_TRANSFORM,
                     drive::getRawOdometryPose));
-        
-                claw =
+
+        claw =
             new Claw(
                 new DumbMotorIOSim(ClawConstants.CLAW_SIM_MOTOR, ClawConstants.CLAW_SIM),
                 new DistanceSensorIOSim("ClawSimSensor", 1));
-        climber = 
-        new Climber(
-            new DumbMotorIOSim(
-                ClimberConstants.CLIMBER_SIM_MOTOR, 
-                ClimberConstants.CLIMBER_SIM));
-           
+        climber =
+            new Climber(
+                new DumbMotorIOSim(
+                    ClimberConstants.CLIMBER_SIM_MOTOR, ClimberConstants.CLIMBER_SIM));
 
         break;
 
