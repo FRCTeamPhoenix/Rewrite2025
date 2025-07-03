@@ -9,6 +9,8 @@ jobs:
     container: wpilib/roborio-cross-ubuntu:2025-22.04
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
       - name: Add repository to git safe directories
         run: git config --global --add safe.directory $GITHUB_WORKSPACE
       - name: Grant execute permission for gradlew
@@ -21,6 +23,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ secrets.BOT2342 }}
       - uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
@@ -28,4 +31,5 @@ jobs:
       - run: ./gradlew :spotlessApply
       - uses: stefanzweifel/git-auto-commit-action@v5
         with:
+            commit_author: Phoenix2342-Bot <github@team2342.org>
             commit_message: Auto-format code

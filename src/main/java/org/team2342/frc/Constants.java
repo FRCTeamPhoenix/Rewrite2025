@@ -23,8 +23,8 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
-import org.team2342.lib.motors.dumb.DumbMotorConfig;
-import org.team2342.lib.motors.dumb.DumbMotorConfig.IdleMode;
+import org.team2342.lib.motors.MotorConfig;
+import org.team2342.lib.motors.MotorConfig.IdleMode;
 
 public final class Constants {
   public static final Mode CURRENT_MODE = Mode.REAL;
@@ -170,8 +170,8 @@ public final class Constants {
   public static final class ClawConstants {
     public static final double SENSOR_THRESHOLD = 0.02;
 
-    public static final DumbMotorConfig CLAW_CONFIG =
-        new DumbMotorConfig()
+    public static final MotorConfig CLAW_CONFIG =
+        new MotorConfig()
             .withIdleMode(IdleMode.BRAKE)
             .withSupplyCurrentLimit(30)
             .withMotorInverted(true);
@@ -189,8 +189,8 @@ public final class Constants {
     public static final double MIN_ANGLE = -Math.PI;
     public static final double MAX_ANGLE = Math.PI;
 
-    public static final DumbMotorConfig CLIMBER_CONFIG =
-        new DumbMotorConfig()
+    public static final MotorConfig CLIMBER_CONFIG =
+        new MotorConfig()
             .withIdleMode(IdleMode.BRAKE)
             .withSupplyCurrentLimit(40)
             .withMotorInverted(false);
