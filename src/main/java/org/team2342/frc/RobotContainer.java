@@ -43,6 +43,7 @@ import org.team2342.frc.subsystems.vision.VisionIOConstrainedSim;
 import org.team2342.frc.subsystems.vision.VisionIOPhoton;
 import org.team2342.frc.subsystems.vision.VisionIOSim;
 import org.team2342.lib.motors.dumb.DumbMotorIO;
+import org.team2342.lib.motors.dumb.DumbMotorIOSim;
 import org.team2342.lib.motors.dumb.DumbMotorIOTalonFX;
 
 public class RobotContainer {
@@ -53,8 +54,11 @@ public class RobotContainer {
   private final LoggedDashboardChooser<Command> autoChooser;
 
   @Getter private final CommandXboxController driverController = new CommandXboxController(0);
-  @Getter private final CommandXboxController operatorController = new CommandXboxController(1);
   private final Alert driverControllerAlert =
+      new Alert("Driver controller is disconnected!", AlertType.kError);
+
+  @Getter private final CommandXboxController operatorController = new CommandXboxController(1);
+  private final Alert operatorControllerAlert =
       new Alert("Driver controller is disconnected!", AlertType.kError);
 
   public RobotContainer() {
@@ -103,7 +107,13 @@ public class RobotContainer {
                     VisionConstants.LEFT_CAMERA_NAME,
                     VisionConstants.FRONT_LEFT_TRANSFORM,
                     drive::getRawOdometryPose));
-        climber = new Climber(new DumbMotorIO() {});
+        climber = 
+        new Climber(
+            new DumbMotorIOSim(
+                ClimberConstants.CLIMBER_SIM_MOTOR, 
+                ClimberConstants.CLIMBER_SIM));
+                
+
 
         break;
 
@@ -168,8 +178,9 @@ public class RobotContainer {
                 drive::getPose,
                 () -> -driverController.getLeftY(),
                 () -> -driverController.getLeftX()));
-    operatorController.povLeft().whileTrue(climber.climberIn()).onFalse(climber.stop());
-    operatorController.povRight().whileTrue(climber.climberOut()).onFalse(climber.stop());
+    //operator controls for climber
+    operatorController.povLeft().whileTrue(climber.out()).onFalse(climber.stop());
+    operatorController.povRight().whileTrue(climber.in()).onFalse(climber.stop());
   }
 
   public Command getAutonomousCommand() {
@@ -205,5 +216,6 @@ public class RobotContainer {
 
   public void updateAlerts() {
     driverControllerAlert.set(!driverController.isConnected());
+    operatorControllerAlert.set(!operatorController.isConnected());
   }
 }

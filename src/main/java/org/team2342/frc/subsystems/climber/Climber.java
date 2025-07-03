@@ -14,34 +14,36 @@ public class Climber extends SubsystemBase {
   private final DumbMotorIO motor;
   private final DumbMotorIOInputsAutoLogged inputs = new DumbMotorIOInputsAutoLogged();
 
-  private final Alert climberTalonAlert =
+  private final Alert motorAlert =
       new Alert("Climber Motor is diconnected", AlertType.kError);
-  private double volts = 0.0;
 
   public Climber(DumbMotorIO motor) {
     this.motor = motor;
+    setName("Climber");
+
+    setDefaultCommand(Commands.run(() -> motor.runVoltage(0.0), this));
   }
 
   @Override
   public void periodic() {
     motor.updateInputs(inputs);
     Logger.processInputs("Climber", inputs);
-    motor.runVoltage(volts);
+    
 
-    climberTalonAlert.set(!inputs.connected);
+    motorAlert.set(!inputs.connected);
 
     ExecutionLogger.log("Climber");
   }
 
-  public Command climberOut() {
-    return Commands.run(() -> motor.runVoltage(10), this);
+  public Command out() {
+    return Commands.run(() -> motor.runVoltage(10.0), this).withName("Climber Out");
   }
 
-  public Command climberIn() {
-    return Commands.run(() -> motor.runVoltage(-10), this);
+  public Command in() {
+    return Commands.run(() -> motor.runVoltage(-10.0), this).withName("Climber In");
   }
 
   public Command stop() {
-    return Commands.run(() -> motor.runVoltage(0), this);
+    return Commands.runOnce(() -> motor.runVoltage(0.0), this).withName("Climber Stop");
   }
 }

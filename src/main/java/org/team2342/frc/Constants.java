@@ -18,7 +18,11 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.numbers.N8;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
+
 import org.team2342.lib.motors.dumb.DumbMotorConfig;
 import org.team2342.lib.motors.dumb.DumbMotorConfig.IdleMode;
 
@@ -173,8 +177,22 @@ public final class Constants {
     public static final DumbMotorConfig CLIMBER_CONFIG =
         new DumbMotorConfig()
             .withIdleMode(IdleMode.BRAKE)
-            .withSupplyCurrentLimit(30)
+            .withSupplyCurrentLimit(40)
             .withMotorInverted(false);
+
+    public static final DCMotor CLIMBER_SIM_MOTOR = DCMotor.getKrakenX60(1);
+
+    public static final SingleJointedArmSim CLIMBER_SIM =
+    new SingleJointedArmSim(
+        LinearSystemId.createSingleJointedArmSystem(CLIMBER_SIM_MOTOR, 0.04, GEAR_RATIO),
+        CLIMBER_SIM_MOTOR,
+        GEAR_RATIO,
+        ARM_LENGTH,
+        MIN_ANGLE,
+        MAX_ANGLE,
+        true,
+        MAX_ANGLE);
+
   }
 
   public static final class CANConstants {
