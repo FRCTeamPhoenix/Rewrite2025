@@ -182,6 +182,19 @@ public final class Constants {
             LinearSystemId.createDCMotorSystem(CLAW_SIM_MOTOR, 0.003, 5), CLAW_SIM_MOTOR);
   }
 
+  public static final class ElevatorConstants {
+    public static final double GEAR_RATIO = 62.0 / 8.0;
+    public static final double CARRIAGE_MASS = Units.lbsToKilograms(25.0);
+    public static final double PULLEY_RADIUS = Units.inchesToMeters(1.751) / 2;
+
+    public static final double MIN_HEIGHT = Units.inchesToMeters(10);
+    public static final double MAX_EXTENSION = 1.75;
+    public static final double MAX_HEIGHT = MIN_HEIGHT + MAX_EXTENSION;
+
+    public static final double M_TO_RAD = GEAR_RATIO / (PULLEY_RADIUS * 3);
+    public static final double AT_GOAL_TOLERANCE = 0.01;
+  }
+
   public static final class ClimberConstants {
     public static final double GEAR_RATIO = 144;
     public static final double ARM_LENGTH = Units.inchesToMeters(16.6);
