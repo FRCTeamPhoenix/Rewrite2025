@@ -6,6 +6,11 @@
 
 package org.team2342.frc.subsystems.superstructure.wrist;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.Alert;
+import edu.wpi.first.wpilibj.Alert.AlertType;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
 import org.team2342.frc.Constants.WristConstants;
 import org.team2342.lib.logging.ExecutionLogger;
@@ -13,67 +18,65 @@ import org.team2342.lib.motors.smart.SmartMotorIO;
 import org.team2342.lib.motors.smart.SmartMotorIOInputsAutoLogged;
 import org.team2342.lib.sensors.absolute.AbsoluteEncoderIO;
 import org.team2342.lib.sensors.absolute.AbsoluteEncoderIOInputsAutoLogged;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.Alert;
-import edu.wpi.first.wpilibj.Alert.AlertType;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.Command;
 
-public class Wrist extends SubsystemBase{
-    private final SmartMotorIO motor; 
-    private final SmartMotorIOInputsAutoLogged inputs = new SmartMotorIOInputsAutoLogged();
+public class Wrist extends SubsystemBase {
+  private final SmartMotorIO motor;
+  private final SmartMotorIOInputsAutoLogged inputs = new SmartMotorIOInputsAutoLogged();
 
-    private final AbsoluteEncoderIO encoder; 
-    private final AbsoluteEncoderIOInputsAutoLogged encoderInputs = new AbsoluteEncoderIOInputsAutoLogged();
+  private final AbsoluteEncoderIO encoder;
+  private final AbsoluteEncoderIOInputsAutoLogged encoderInputs =
+      new AbsoluteEncoderIOInputsAutoLogged();
 
-    private final Alert motorAlert = new Alert("Wrist motor is disconnected!", AlertType.kError);
-    private final Alert encoderAlert = new Alert("Wrist Encoder is disconnected!", AlertType.kError);
+  private final Alert motorAlert = new Alert("Wrist motor is disconnected!", AlertType.kError);
+  private final Alert encoderAlert = new Alert("Wrist Encoder is disconnected!", AlertType.kError);
 
-    private boolean reset = false;
+  private boolean reset = false;
 
-    public Wrist(SmartMotorIO motor, AbsoluteEncoderIO encoder){
-        this.motor = motor;
-        this.encoder = encoder;
+  public Wrist(SmartMotorIO motor, AbsoluteEncoderIO encoder) {
+    this.motor = motor;
+    this.encoder = encoder;
 
-        setName("Wrist");
-        setDefaultCommand(run(() -> motor.runVoltage(0.0)));
+    setName("Wrist");
+    setDefaultCommand(run(() -> motor.runVoltage(0.0)));
+  }
+
+  @Override
+  public void periodic() {
+    motor.updateInputs(inputs);
+    encoder.updateInputs(encoderInputs);
+
+    Logger.processInputs("Wrist/Motor", inputs);
+    Logger.processInputs("Wrist/Encoder", encoderInputs);
+
+    motorAlert.set(!inputs.motorsConnected[0]);
+    encoderAlert.set(!encoderInputs.connected);
+
+    if (!reset && encoderInputs.connected) {
+      motor.setPosition(encoderInputs.angle.getRadians());
+      reset = true;
     }
 
-    @Override
-    public void periodic() {
-        motor.updateInputs(inputs);
-        encoder.updateInputs(encoderInputs);
+    ExecutionLogger.log("Wrist");
+  }
 
-        Logger.processInputs("Wrist/Motor", inputs);
-        Logger.processInputs("Wrist/Encoder", encoderInputs);
+  public Rotation2d getAngle() {
+    return Rotation2d.fromRadians(inputs.positionRad / WristConstants.GEAR_RATIO);
+  }
 
-        motorAlert.set(!inputs.motorsConnected[0]);
-        encoderAlert.set(!encoderInputs.connected);
-
-        if (!reset && encoderInputs.connected) {
-            motor.setPosition(encoderInputs.angle.getRadians()); 
-            reset = true;
-        }
-
-        ExecutionLogger.log("Wrist");
-    }
-
-    public Rotation2d getAngle() {
-        return Rotation2d.fromRadians(inputs.positionRad / WristConstants.GEAR_RATIO);
-    }
-
-    public Command goToAngle(Rotation2d targetAngle) {
-        return run(() -> motor.runPosition(targetAngle.getRadians()))
-        .until(() -> Math.abs(targetAngle.getRadians() - getAngle().getRadians()) < WristConstants.AT_TARGET_TOLERANCE)
+  public Command goToAngle(Rotation2d targetAngle) {
+    return run(() -> motor.runPosition(targetAngle.getRadians()))
+        .until(
+            () ->
+                Math.abs(targetAngle.getRadians() - getAngle().getRadians())
+                    < WristConstants.AT_TARGET_TOLERANCE)
         .withName("Wrist Go To Angle");
-    }
+  }
 
-    public Command holdAngle(Rotation2d targetAngle) {
-        return run(() -> motor.runPosition(targetAngle.getRadians()))
-            .withName("Wrist Hold Angle");
-    }
+  public Command holdAngle(Rotation2d targetAngle) {
+    return run(() -> motor.runPosition(targetAngle.getRadians())).withName("Wrist Hold Angle");
+  }
 
-    public Command stop() {
-        return runOnce(() -> motor.runVoltage(0.0)).withName("Wrist Stop");
-    }    
+  public Command stop() {
+    return runOnce(() -> motor.runVoltage(0.0)).withName("Wrist Stop");
+  }
 }

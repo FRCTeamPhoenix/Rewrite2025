@@ -20,11 +20,15 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.numbers.N8;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import org.team2342.lib.motors.MotorConfig;
 import org.team2342.lib.motors.MotorConfig.IdleMode;
+import org.team2342.lib.motors.smart.SmartMotorConfig;
+import org.team2342.lib.motors.smart.SmartMotorConfig.ControlType;
+import org.team2342.lib.sensors.absolute.AbsoluteEncoderIO.AbsoluteEncoderConfig;
 
 public final class Constants {
   public static final Mode CURRENT_MODE = Mode.REAL;
@@ -217,6 +221,15 @@ public final class Constants {
     public static final double CUTOFF_ANGLE = 1.2;
     public static final double MOVE_ANGLE = 0.5;
     public static final double AT_TARGET_TOLERANCE = 0.01;
+
+    public static final SmartMotorConfig WRIST_CONFIG =
+        new SmartMotorConfig()
+            .withGearRatio(GEAR_RATIO)
+            .withProfileConstraintsRad(new TrapezoidProfile.Constraints(3.5, 3))
+            .withIdleMode(IdleMode.BRAKE)
+            .withControlType(ControlType.PROFILED_POSITION)
+            .withSupplyCurrentLimit(40);
+    public static final AbsoluteEncoderConfig ENCODER_CONFIG = new AbsoluteEncoderConfig(0, true);
   }
 
   public static final class CANConstants {
@@ -228,10 +241,10 @@ public final class Constants {
     public static final int[] BL_IDS = {3, 7, 11};
     public static final int[] BR_IDS = {4, 8, 12};
 
+    public static final int WRIST_ID = 17;
+    public static final int WRIST_ENCODER_ID = 18;
     public static final int CLAW_ID = 19;
     public static final int CLAW_LASERCAN_ID = 20;
     public static final int CLIMBER_ID = 21;
-    public static final int WRIST_ID = 17;
-    public static final int WRIST_ENCODER_ID = 18;
   }
 }

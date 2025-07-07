@@ -31,6 +31,7 @@ import org.team2342.frc.Constants.ClawConstants;
 import org.team2342.frc.Constants.ClimberConstants;
 import org.team2342.frc.Constants.DriveConstants;
 import org.team2342.frc.Constants.VisionConstants;
+import org.team2342.frc.Constants.WristConstants;
 import org.team2342.frc.commands.DriveCommands;
 import org.team2342.frc.commands.DriveToPose;
 import org.team2342.frc.commands.RotationLockedDrive;
@@ -42,6 +43,7 @@ import org.team2342.frc.subsystems.drive.GyroIOPigeon2;
 import org.team2342.frc.subsystems.drive.ModuleIO;
 import org.team2342.frc.subsystems.drive.ModuleIOSim;
 import org.team2342.frc.subsystems.drive.ModuleIOTalonFX;
+import org.team2342.frc.subsystems.superstructure.wrist.Wrist;
 import org.team2342.frc.subsystems.vision.Vision;
 import org.team2342.frc.subsystems.vision.VisionIO;
 import org.team2342.frc.subsystems.vision.VisionIOConstrainedSim;
@@ -50,6 +52,11 @@ import org.team2342.frc.subsystems.vision.VisionIOSim;
 import org.team2342.lib.motors.dumb.DumbMotorIO;
 import org.team2342.lib.motors.dumb.DumbMotorIOSim;
 import org.team2342.lib.motors.dumb.DumbMotorIOTalonFX;
+import org.team2342.lib.motors.smart.SmartMotorIO;
+import org.team2342.lib.motors.smart.SmartMotorIOTalonFX;
+import org.team2342.lib.pidff.PIDFFConfigs;
+import org.team2342.lib.sensors.absolute.AbsoluteEncoderIO;
+import org.team2342.lib.sensors.absolute.AbsoluteEncoderIORedux;
 import org.team2342.lib.sensors.distance.DistanceSensorIO;
 import org.team2342.lib.sensors.distance.DistanceSensorIOLaserCAN;
 import org.team2342.lib.sensors.distance.DistanceSensorIOSim;
@@ -59,6 +66,7 @@ public class RobotContainer {
   @Getter private final Vision vision;
   @Getter private final Claw claw;
   @Getter private final Climber climber;
+  @Getter private final Wrist wrist;
 
   private final LoggedDashboardChooser<Command> autoChooser;
 
@@ -98,6 +106,13 @@ public class RobotContainer {
         climber =
             new Climber(
                 new DumbMotorIOTalonFX(CANConstants.CLIMBER_ID, ClimberConstants.CLIMBER_CONFIG));
+        wrist =
+            new Wrist(
+                new SmartMotorIOTalonFX(
+                    CANConstants.WRIST_ID,
+                    WristConstants.WRIST_CONFIG.withPIDFFConfigs(new PIDFFConfigs().withKP(1))),
+                new AbsoluteEncoderIORedux(
+                    CANConstants.WRIST_ENCODER_ID, WristConstants.ENCODER_CONFIG, false));
 
         LoggedPowerDistribution.getInstance(CANConstants.PDH_ID, ModuleType.kRev);
         break;
@@ -124,7 +139,6 @@ public class RobotContainer {
                     VisionConstants.LEFT_CAMERA_NAME,
                     VisionConstants.FRONT_LEFT_TRANSFORM,
                     drive::getRawOdometryPose));
-
         claw =
             new Claw(
                 new DumbMotorIOSim(ClawConstants.CLAW_SIM_MOTOR, ClawConstants.CLAW_SIM),
@@ -133,6 +147,7 @@ public class RobotContainer {
             new Climber(
                 new DumbMotorIOSim(
                     ClimberConstants.CLIMBER_SIM_MOTOR, ClimberConstants.CLIMBER_SIM));
+        wrist = new Wrist(new SmartMotorIO() {}, new AbsoluteEncoderIO() {});
 
         break;
 
@@ -147,6 +162,7 @@ public class RobotContainer {
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
         claw = new Claw(new DumbMotorIO() {}, new DistanceSensorIO() {});
         climber = new Climber(new DumbMotorIO() {});
+        wrist = new Wrist(new SmartMotorIO() {}, new AbsoluteEncoderIO() {});
 
         break;
     }
