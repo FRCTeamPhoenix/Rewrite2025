@@ -216,6 +216,7 @@ public final class Constants {
     public static final double MAX_ANGLE = 1.43;
     public static final double CUTOFF_ANGLE = 1.2;
     public static final double MOVE_ANGLE = 0.5;
+    public static final double AT_TARGET_TOLERANCE = 0.01;
   }
 
   public static final class CANConstants {

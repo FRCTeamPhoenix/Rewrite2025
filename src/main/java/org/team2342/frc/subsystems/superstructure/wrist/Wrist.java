@@ -51,9 +51,7 @@ public class Wrist extends SubsystemBase{
         encoderAlert.set(!encoderInputs.connected);
 
         if (!reset && encoderInputs.connected) {
-            //get rotations from encoder, then convert to radians, and use gear ratio
-            double absolutePosition = encoderInputs.angle.getRotations() *2.0 * Math.PI * WristConstants.GEAR_RATIO;
-            motor.setPosition(absolutePosition);
+            motor.setPosition(encoderInputs.angle.getRadians()); 
             reset = true;
         }
 
@@ -65,18 +63,17 @@ public class Wrist extends SubsystemBase{
     }
 
     public Command goToAngle(Rotation2d targetAngle) {
-        return run(() -> motor.runPosition(targetAngle.getRadians() * WristConstants.GEAR_RATIO))
-        .until(() -> Math.abs(targetAngle.getRadians() - getAngle().getRadians()) < 0.01)
+        return run(() -> motor.runPosition(targetAngle.getRadians()))
+        .until(() -> Math.abs(targetAngle.getRadians() - getAngle().getRadians()) < WristConstants.AT_TARGET_TOLERANCE)
         .withName("Wrist Go To Angle");
     }
 
     public Command holdAngle(Rotation2d targetAngle) {
-        return run(() -> motor.runPosition(targetAngle.getRadians() * WristConstants.GEAR_RATIO))
+        return run(() -> motor.runPosition(targetAngle.getRadians()))
             .withName("Wrist Hold Angle");
     }
 
     public Command stop() {
         return runOnce(() -> motor.runVoltage(0.0)).withName("Wrist Stop");
-    }
-    
+    }    
 }
