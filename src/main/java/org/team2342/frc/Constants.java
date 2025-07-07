@@ -209,6 +209,15 @@ public final class Constants {
             MAX_ANGLE);
   }
 
+  public static final class WristConstants {
+    public static final double GEAR_RATIO = 45;
+    public static final double CLAW_LENGTH = Units.inchesToMeters(16.6);
+    public static final double MIN_ANGLE = -0.93;
+    public static final double MAX_ANGLE = 1.43;
+    public static final double CUTOFF_ANGLE = 1.2;
+    public static final double MOVE_ANGLE = 0.5;
+  }
+
   public static final class CANConstants {
     public static final int PDH_ID = 14;
 
@@ -221,5 +230,7 @@ public final class Constants {
     public static final int CLAW_ID = 19;
     public static final int CLAW_LASERCAN_ID = 20;
     public static final int CLIMBER_ID = 21;
+    public static final int WRIST_ID = 17;
+    public static final int WRIST_ENCODER_ID = 18;
   }
 }
