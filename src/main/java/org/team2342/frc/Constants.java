@@ -191,7 +191,7 @@ public final class Constants {
     public static final double MAX_EXTENSION = 1.75;
     public static final double MAX_HEIGHT = MIN_HEIGHT + MAX_EXTENSION;
 
-    public static final double M_TO_RAD = GEAR_RATIO / (PULLEY_RADIUS * 3);
+    public static final double M_TO_RAD = 1 / (PULLEY_RADIUS * 3);
     public static final double AT_GOAL_TOLERANCE = 0.01;
   }
 
