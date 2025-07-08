@@ -30,6 +30,7 @@ import org.team2342.frc.Constants.CANConstants;
 import org.team2342.frc.Constants.ClawConstants;
 import org.team2342.frc.Constants.ClimberConstants;
 import org.team2342.frc.Constants.DriveConstants;
+import org.team2342.frc.Constants.ElevatorConstants;
 import org.team2342.frc.Constants.VisionConstants;
 import org.team2342.frc.commands.DriveCommands;
 import org.team2342.frc.commands.DriveToPose;
@@ -42,6 +43,7 @@ import org.team2342.frc.subsystems.drive.GyroIOPigeon2;
 import org.team2342.frc.subsystems.drive.ModuleIO;
 import org.team2342.frc.subsystems.drive.ModuleIOSim;
 import org.team2342.frc.subsystems.drive.ModuleIOTalonFX;
+import org.team2342.frc.subsystems.superstructure.elevator.Elevator;
 import org.team2342.frc.subsystems.vision.Vision;
 import org.team2342.frc.subsystems.vision.VisionIO;
 import org.team2342.frc.subsystems.vision.VisionIOConstrainedSim;
@@ -50,6 +52,11 @@ import org.team2342.frc.subsystems.vision.VisionIOSim;
 import org.team2342.lib.motors.dumb.DumbMotorIO;
 import org.team2342.lib.motors.dumb.DumbMotorIOSim;
 import org.team2342.lib.motors.dumb.DumbMotorIOTalonFX;
+import org.team2342.lib.motors.smart.SmartMotorConfig.FollowerConfig;
+import org.team2342.lib.motors.smart.SmartMotorIO;
+import org.team2342.lib.motors.smart.SmartMotorIOTalonFX;
+import org.team2342.lib.pidff.PIDFFConfigs;
+import org.team2342.lib.pidff.PIDFFConfigs.GravityType;
 import org.team2342.lib.sensors.distance.DistanceSensorIO;
 import org.team2342.lib.sensors.distance.DistanceSensorIOLaserCAN;
 import org.team2342.lib.sensors.distance.DistanceSensorIOSim;
@@ -59,6 +66,7 @@ public class RobotContainer {
   @Getter private final Vision vision;
   @Getter private final Claw claw;
   @Getter private final Climber climber;
+  @Getter private final Elevator elevator;
 
   private final LoggedDashboardChooser<Command> autoChooser;
 
@@ -98,6 +106,19 @@ public class RobotContainer {
         climber =
             new Climber(
                 new DumbMotorIOTalonFX(CANConstants.CLIMBER_ID, ClimberConstants.CLIMBER_CONFIG));
+        elevator =
+            new Elevator(
+                new SmartMotorIOTalonFX(
+                    CANConstants.ELEVATOR_ID,
+                    ElevatorConstants.WRIST_CONFIG.withPIDFFConfigs(
+                        new PIDFFConfigs()
+                            .withKP(2.5)
+                            .withKI(1)
+                            .withKG(0.58)
+                            .withGravityType(GravityType.STATIC)),
+                    new FollowerConfig[] {
+                      new FollowerConfig(CANConstants.ELEVATOR_FOLLOWER_ID, false)
+                    }));
 
         LoggedPowerDistribution.getInstance(CANConstants.PDH_ID, ModuleType.kRev);
         break;
@@ -124,7 +145,6 @@ public class RobotContainer {
                     VisionConstants.LEFT_CAMERA_NAME,
                     VisionConstants.FRONT_LEFT_TRANSFORM,
                     drive::getRawOdometryPose));
-
         claw =
             new Claw(
                 new DumbMotorIOSim(ClawConstants.CLAW_SIM_MOTOR, ClawConstants.CLAW_SIM),
@@ -133,6 +153,7 @@ public class RobotContainer {
             new Climber(
                 new DumbMotorIOSim(
                     ClimberConstants.CLIMBER_SIM_MOTOR, ClimberConstants.CLIMBER_SIM));
+        elevator = new Elevator(new SmartMotorIO() {});
 
         break;
 
@@ -147,6 +168,7 @@ public class RobotContainer {
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
         claw = new Claw(new DumbMotorIO() {}, new DistanceSensorIO() {});
         climber = new Climber(new DumbMotorIO() {});
+        elevator = new Elevator(new SmartMotorIO() {});
 
         break;
     }
