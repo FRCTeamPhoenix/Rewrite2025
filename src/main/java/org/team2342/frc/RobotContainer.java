@@ -112,8 +112,8 @@ public class RobotContainer {
                     CANConstants.ELEVATOR_ID,
                     ElevatorConstants.WRIST_CONFIG.withPIDFFConfigs(
                         new PIDFFConfigs()
-                            .withKP(2.5)
-                            .withKI(1)
+                            .withKP(100)
+                            .withKI(10)
                             .withKG(0.58)
                             .withGravityType(GravityType.STATIC)),
                     new FollowerConfig[] {
@@ -222,6 +222,7 @@ public class RobotContainer {
                 () -> -driverController.getLeftX()));
     operatorController.povLeft().whileTrue(climber.out()).onFalse(climber.stop());
     operatorController.povRight().whileTrue(climber.in()).onFalse(climber.stop());
+    operatorController.y().whileTrue(elevator.holdHeight(0.5)).onFalse(elevator.stop());
 
     driverController.y().whileTrue(claw.intakeUntilCoral()).onFalse(claw.stop());
     driverController.x().whileTrue(claw.outtake()).onFalse(claw.stop());
