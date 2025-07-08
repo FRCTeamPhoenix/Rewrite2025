@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 import org.team2342.frc.Constants.ElevatorConstants;
 import org.team2342.lib.logging.ExecutionLogger;
@@ -44,6 +46,7 @@ public class Elevator extends SubsystemBase {
     ExecutionLogger.log("Elevator");
   }
 
+  @AutoLogOutput(key = "Elevator/HeightMeters")
   public double getHeightMeters() {
     return inputs.positionRad / ElevatorConstants.M_TO_RAD;
   }
