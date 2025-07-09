@@ -50,6 +50,11 @@ public class Elevator extends SubsystemBase {
     return inputs.positionRad / ElevatorConstants.M_TO_RAD;
   }
 
+  @AutoLogOutput(key = "Elevator/VelocityMetersPerSec")
+  public double getVelocityMetersPerSec() {
+    return inputs.velocityRadPerSec / ElevatorConstants.M_TO_RAD;
+  }
+
   public Command goToHeight(double targetHeightMeters) {
     return run(() -> motors.runPosition(targetHeightMeters * ElevatorConstants.M_TO_RAD))
         .until(
@@ -64,11 +69,11 @@ public class Elevator extends SubsystemBase {
         .withName("Elevator Hold Height");
   }
 
-  public void zeroElevator() {
-    // motors.setPosition(0);
-  }
-
   public Command stop() {
     return runOnce(() -> motors.runVoltage(0.0));
+  }
+
+  public void zeroElevator() {
+    motors.setPosition(0);
   }
 }

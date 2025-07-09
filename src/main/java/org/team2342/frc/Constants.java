@@ -200,8 +200,8 @@ public final class Constants {
     public static final SmartMotorConfig WRIST_CONFIG =
         new SmartMotorConfig()
             .withGearRatio(GEAR_RATIO)
-            .withProfileConstraintsRad(new TrapezoidProfile.Constraints(3, 8))
-            .withIdleMode(IdleMode.COAST)
+            .withProfileConstraintsRad(new TrapezoidProfile.Constraints(3 * M_TO_RAD, 8 * M_TO_RAD))
+            .withIdleMode(IdleMode.BRAKE)
             .withControlType(ControlType.PROFILED_POSITION)
             .withSupplyCurrentLimit(40);
   }
